@@ -8,9 +8,9 @@ package co.unicauca.piedrazul.domain.entities;
  *
  * @author santi
  */
-public class Appointment {
-    int idPatient;
-    int idDoctor;
-    int id;
-    String date;
+public class Patient extends User {
+    int phone;
+    
+    
+    
 }

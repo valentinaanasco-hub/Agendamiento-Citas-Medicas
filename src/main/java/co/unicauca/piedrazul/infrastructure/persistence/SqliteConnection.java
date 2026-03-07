@@ -38,6 +38,15 @@ public class SqliteConnection {
                 PRIMARY KEY("ROLE_ID")
             );
             """;
+        
+        String createSpecialtyTable = """
+            CREATE TABLE IF NOT EXISTS "SPECIALTY" (
+                    "SPECIALTY_ID" INTEGER NOT NULL CHECK("SPECIALTY_ID" > 0),
+                    "SPECIALTY_NAME" TEXT NOT NULL UNIQUE,
+                    PRIMARY KEY("SPECIALTY_ID")   
+                    ""
+                    );
+                """;
 
         String createUserTable = """
             CREATE TABLE IF NOT EXISTS "USER" (
@@ -57,8 +66,38 @@ public class SqliteConnection {
                 FOREIGN KEY("ROLE_ID") REFERENCES "ROLE"("ROLE_ID")
             );
             """;
+        
+        String createDoctorTable = """
+            CREATE TABLE IF NOT EXISTS "DOCTOR" (
+                    "USER_ID" INTEGER NOT NULL CHECK("USER_ID" > 0),
+                    "SPECIALTY_ID" INTEGER NOT NULL CHECK("SPECIALTY_ID" > 0),
+                    PRIMARY KEY("USER_ID"),
+                    FOREIGN KEY("USER_ID") REFERENCES "USER"("USER_ID") ON DELETE CASCADE
+                    FOREIGN KEY("SPECIALTY_ID") REFERENCES "SPECIALTY"         
+                    ""
+                    );
+                """;        
 
+        String createPatientTable = """
+            CREATE TABLE IF NOT EXISTS "DOCTOR" (
+                    "USER_ID" INTEGER NOT NULL CHECK("USER_ID" > 0),
+                    "SPECIALTY_ID" INTEGER NOT NULL CHECK("SPECIALTY_ID" > 0),
+                    PRIMARY KEY("USER_ID"),
+                    FOREIGN KEY("USER_ID") REFERENCES "USER"("USER_ID") ON DELETE CASCADE
+                    FOREIGN KEY("SPECIALTY_ID") REFERENCES "SPECIALTY"         
+                    ""
+                    );
+                """;        
+        
         String insertDefaultRoles = """
+            INSERT OR IGNORE INTO "ROLE" ("ROLE_ID", "ROLE_NAME") VALUES
+            (1, 'MEDICO'),
+            (2, 'TERAPISTA'),
+            (3, 'AGENDADOR'),
+            (4, 'ADMINISTRADOR');
+            """;
+       
+        String insertDefaultSpecialtys = """
             INSERT OR IGNORE INTO "ROLE" ("ROLE_ID", "ROLE_NAME") VALUES
             (1, 'MEDICO'),
             (2, 'TERAPISTA'),
@@ -68,8 +107,11 @@ public class SqliteConnection {
 
         try (Statement stmt = con.createStatement()) {
             stmt.execute(createRoleTable);
+            stmt.execute(createSpecialtyTable);
             stmt.execute(createUserTable);
+            
             stmt.execute(insertDefaultRoles);
+            
         } catch (SQLException e) {
             System.err.println("Error al inicializar la base de datos: " + e.getMessage());
         }

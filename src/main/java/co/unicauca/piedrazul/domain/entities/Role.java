@@ -9,5 +9,5 @@ package co.unicauca.piedrazul.domain.entities;
  * @author Santiago Solarte
  */
 public class Role {
-    
+    int id
 }
